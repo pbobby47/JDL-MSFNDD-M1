@@ -1,0 +1,15 @@
+{
+  "name": "node-js",
+  "version": "1.0.0",
+  "description": "We are learning NODE JS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bobby Perecharla",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
