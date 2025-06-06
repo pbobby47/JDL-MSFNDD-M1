@@ -1,1 +1,1 @@
-I am the input data from data.txt file
+I am from data 1 file
