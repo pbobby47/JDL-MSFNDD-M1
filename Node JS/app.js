@@ -131,7 +131,7 @@ We can create, read, update, delete the files / folders and etc information prov
 It is an inbuilt module
 */
 
-const fs = require("fs");
+// const fs = require("fs");
 // console.log(fs);
 
 // ~ readFileSync():
@@ -348,6 +348,7 @@ server.listen(PORT, hostname, () => {
 */
 
 // ? Example 2:
+/*
 const http = require("http");
 
 const server = http.createServer((request, response) => {
@@ -355,7 +356,7 @@ const server = http.createServer((request, response) => {
   console.log(request.url);
   console.log(request.method);
 
-  let path = request.url;
+  let path = request.url.toLocaleLowerCase();
 
   if (path == "/" || path == "/home") {
     response.end(
@@ -365,14 +366,22 @@ const server = http.createServer((request, response) => {
     response.end(
       "<h1 style='text-align:center; color:blue'> This is About Page </h1>"
     );
-  } else if (path == " /contact") {
-    // task
-  } else if (path == " /login") {
-    // task
-  } else if (path == " /users") {
-    // task
-  } else if (path == " /products") {
-    // task
+  } else if (path == "/contact") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Contact Page </h1>"
+    );
+  } else if (path == "/login") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Login Page </h1>"
+    );
+  } else if (path == "/users") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Users Page </h1>"
+    );
+  } else if (path == "/products") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Products Page </h1>"
+    );
   } else {
     response.end(
       `<h1 style='text-align:center; color:red'> Sorry, Page Not Found </h1>`
@@ -386,3 +395,421 @@ const hostname = "127.0.0.1";
 server.listen(PORT, hostname, () => {
   console.log(`Server has started on ${hostname}:${PORT}`);
 });
+*/
+
+// ? Example 3:
+// How to return HTML as response.
+/*
+const http = require("http");
+const fs = require("fs");
+
+const server = http.createServer((request, response) => {
+  console.log("A new Request received");
+  console.log(request.url);
+  console.log(request.method);
+
+  let path = request.url.toLocaleLowerCase();
+
+  if (path == "/" || path == "/home") {
+    const home = fs.readFileSync("./templates/Home.html", "utf-8");
+    response.end(home);
+  } else if (path == "/about") {
+    const about = fs.readFileSync("./templates/About.html", "utf-8");
+    response.end(about);
+  }
+  // Task - contact page, login page , users page, products page
+  else if (path == "/contact") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Contact Page </h1>"
+    );
+  } else if (path == "/login") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Login Page </h1>"
+    );
+  } else if (path == "/users") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Users Page </h1>"
+    );
+  } else if (path == "/products") {
+    response.end(
+      "<h1 style='text-align:center; color:blue'> This is Products Page </h1>"
+    );
+  } else {
+    response.end(
+      `<h1 style='text-align:center; color:red'> Sorry, Page Not Found </h1>`
+    );
+  }
+});
+
+const PORT = 8000;
+const hostname = "127.0.0.1";
+
+server.listen(PORT, hostname, () => {
+  console.log(`Server has started on ${hostname}:${PORT}`);
+});
+*/
+
+// ? Example 4:
+/* 
+- Here we created a common template and we replacing data and sending to the client.
+- we learnt about routing types 
+    - File based
+    - Resourse based
+response object methods
+  - setHeader
+  - statusCode
+  - writeHead 
+*/
+/*
+const http = require("http");
+const fs = require("fs");
+
+const server = http.createServer((req, res) => {
+  let url = req.url.toLowerCase();
+  console.log(url);
+
+  if (url == "/" || url == "/home") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "HOME");
+    html = html.replaceAll("{{%CONTENT%}}", "HOME");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(html);
+  } else if (url == "/testheaders") {
+    // syntax: response.setHeader(key, value);
+    // res.setHeader("content-type", "text/plain");
+    // res.setHeader("sname", "Ajit");
+    // res.setHeader("secret-token", "as5d4f35asdg3as5g2Dasdg13a5sg1");
+
+    // res.setHeader("content-type", "text/html");
+    // res.setHeader("content-type", "application/json");
+
+    // res.statusCode = 201;
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end("<h1>Testing Response</h1>");
+  } else if (url == "/about") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "ABOUT");
+    html = html.replaceAll("{{%CONTENT%}}", "ABOUT");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+    res.end(html);
+  } else if (url == "/contact") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "Contact");
+    html = html.replaceAll("{{%CONTENT%}}", "Contact");
+
+    res.end(html);
+  } else if (url == "/login") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "Login");
+    html = html.replaceAll("{{%CONTENT%}}", "Login");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+    res.end(html);
+  } else if (url == "/products") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "Products");
+    html = html.replaceAll("{{%CONTENT%}}", "Products");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+    res.end(html);
+  } else if (url == "/users") {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "Users");
+    html = html.replaceAll("{{%CONTENT%}}", "Users");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+    res.end(html);
+  } else if (url == "/api/products") {
+    let products = fs.readFileSync("./data/products.json", "utf-8");
+
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+
+    res.end(products);
+  } else if (url == "/api/users") {
+    let users = fs.readFileSync("./data/users.json", "utf-8");
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+    res.end(users);
+  } else {
+    let html = fs.readFileSync("./templates/index.html", "utf-8");
+    html = html.replaceAll("{{%TITLE%}}", "Page Not Found");
+    html = html.replaceAll("{{%CONTENT%}}", "Error");
+
+    res.writeHead(404, {
+      "content-type": "text/plain",
+    });
+    res.end(html);
+  }
+});
+
+const PORT = 8000;
+const HOSTNAME = "127.0.0.1";
+server.listen(PORT, HOSTNAME, () => {
+  console.log(`Server has started ${HOSTNAME}:${PORT}`);
+});
+*/
+
+// ! ============== Task =================
+/*
+  - Features
+      - Home ✅
+      - About ✅
+      - Contact ✅
+      - Login ✅
+      - Products Page ✅
+      - GET - Products API Data ✅
+      - Users Page ❌ Home Work
+      - GET - Users API Data✅
+*/
+/*
+const http = require("http");
+const fs = require("fs");
+
+let html = fs.readFileSync("./templates/index.html", "utf-8");
+let products = JSON.parse(fs.readFileSync("./data/products.json", "utf-8"));
+let users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
+let productsCard = fs.readFileSync("./templates/ProductCard.html", "utf-8");
+let productsHTML = fs.readFileSync("./templates/Products.html", "utf-8");
+
+let productsResultArray = products.map(product => {
+  let result = productsCard.replaceAll("{{%IMAGELINK%}}", product.image);
+  result = result.replaceAll("{{%TITLE%}}", product.title.slice(0, 30) + "...");
+  result = result.replaceAll("{{%PRICE%}}", product.price);
+
+  return result;
+});
+
+// console.log(productsResultArray.join(""));
+
+const server = http.createServer((req, res) => {
+  let url = req.url.toLowerCase();
+
+  if (url == "/" || url == "/home") {
+    let result = html.replaceAll("{{%TITLE%}}", "Home");
+    result = result.replaceAll("{{%CONTENT%}}", "Home");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/about") {
+    let result = html.replaceAll("{{%TITLE%}}", "About");
+    result = result.replaceAll("{{%CONTENT%}}", "About");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/contact") {
+    let result = html.replaceAll("{{%TITLE%}}", "Contact");
+    result = result.replaceAll("{{%CONTENT%}}", "Contact");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/login") {
+    let result = html.replaceAll("{{%TITLE%}}", "Login");
+    result = result.replaceAll("{{%CONTENT%}}", "Login");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/products") {
+    let productsContainer = `
+    <section style="display:flex;flex-wrap:wrap;justify-content: center; align-items: center;gap:10px">
+    ${productsResultArray.join("")}
+    </section>  
+    `;
+
+    let result = productsHTML.replaceAll("{{%TITLE%}}", "Products Page");
+    result = result.replaceAll("{{%CONTENT%}}", productsContainer);
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/users") {
+    let result = html.replaceAll("{{%TITLE%}}", "Users");
+    result = result.replaceAll("{{%CONTENT%}}", "Users");
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end(result);
+  } else if (url == "/api/products") {
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+
+    // res.end({
+    //   status: "success",
+    //   count: products.length,
+    //   data: products,
+    // });
+
+    // ! Error:
+    //  The "chunk" argument must be of type string or an instance of Buffer or Uint8Array.
+    // Received an instance of Object
+    // summary: res.end must return only string, so finally we have to convert the object into string and we have return as response.
+    // so we have to use JSON.Stringfy();
+
+    res.end(
+      JSON.stringify({
+        status: "Success",
+        count: products.length,
+        data: products,
+      })
+    );
+  } else if (url == "/api/users") {
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+
+    res.end(
+      JSON.stringify({
+        status: "Success",
+        count: users.length,
+        data: users,
+      })
+    );
+  } else {
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    res.end("<h1>Sorry, Page Not Found..</h1>");
+  }
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log("Server has started");
+});
+*/
+
+// ! ================ URL module ============
+/*
+ - It helps us to parse the request url 
+Link: https://nodejs.org/api/url.html#url-strings-and-url-objects
+*/
+/*
+const http = require("http");
+const url = require("url");
+const fs = require("fs");
+
+// console.log(url);
+
+let products = JSON.parse(fs.readFileSync("./data/products.json", "utf8"));
+
+const server = http.createServer((req, res) => {
+  console.log(req.url);
+
+  let parsedURL = url.parse(req.url, true);
+  console.log(parsedURL);
+
+  let { query, pathname } = parsedURL;
+
+  if (pathname == "/products") {
+    let result = products;
+
+    // filering data based on category
+    if (query.category) {
+      console.log("before", result);
+      result = result.filter(product => product.category == query.category);
+      console.log("after", result);
+    }
+
+    // filtering data based on id
+    if (query.id) {
+      result = result.filter(product => product.id == parseInt(query.id));
+      // console.log(result);
+
+      if (result.length == 0) {
+        res.writeHead(200, {
+          "content-type": "application/json",
+        });
+        res.end(
+          JSON.stringify({
+            status: "success",
+            message: "No Products found with the id provided",
+            count: result.length,
+            data: result,
+          })
+        );
+      }
+    }
+
+    // filering data based on title
+    if (query.title) {
+      result = result.filter(product => {
+        // console.log(product.title);
+        return product.title.includes(query.title);
+      });
+    }
+
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+
+    res.end(
+      JSON.stringify({
+        status: "success",
+        message: "This is Products data",
+        count: result.length,
+        data: result,
+      })
+    );
+  } else {
+    res.end(
+      JSON.stringify({
+        status: "fail",
+        message: "try again with new path address",
+      })
+    );
+  }
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log("server has started");
+});
+*/
+
+// ! ========== TASK ================
+
+/*
+ Same as above do for users data also
+
+ Filtering data based on
+  - id
+  - email
+  - firstname
+  - lastname
+  - city
+*/
