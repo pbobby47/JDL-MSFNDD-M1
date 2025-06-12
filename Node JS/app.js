@@ -732,11 +732,12 @@ const server = http.createServer((req, res) => {
   console.log(req.url);
 
   let parsedURL = url.parse(req.url, true);
+  // boolean true - It helps to parse query string in to query object.
   console.log(parsedURL);
 
   let { query, pathname } = parsedURL;
 
-  if (pathname == "/products") {
+  if (pathname == "/api/products") {
     let result = products;
 
     // filering data based on category
@@ -804,12 +805,152 @@ server.listen(8000, "127.0.0.1", () => {
 // ! ========== TASK ================
 
 /*
- Same as above do for users data also
+Same as above do for users data also
 
- Filtering data based on
+Filtering data based on
   - id
   - email
   - firstname
   - lastname
   - city
 */
+
+// ! A small update as we are working with api data start with /api/xxxx
+
+// ! ================ Task ===============
+/*
+  - Requirement
+    - Products Page
+        - Here list all the products and use a button "view more"
+        - by clicking on "view more" button navigate to single product page
+
+    - Users Page
+        - Here list all the users and use a button "view more"
+        - by clicking on "view more" button navigate to single user page
+
+    - single product page
+        - with all possible information
+        - use a button "show all products"
+        - by clicking on "show all products" navigate to products page
+
+    - single user page
+        - with all possible information
+        - use a button "show all users"
+        - by clicking on "show all users" navigate to users page
+
+    - GET - Products Page
+    - GET - Single Product Page, filtering based on id
+    - GET - Users Page
+    - GET - Single User Page, filtering based on id
+*/
+
+const http = require("http");
+const fs = require("fs");
+const url = require("url");
+
+let products = JSON.parse(fs.readFileSync("./data/products.json", "utf-8"));
+let users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
+
+const productCard = fs.readFileSync("./templates/ProductCard.html", "utf-8");
+const SingleProductCard = fs.readFileSync(
+  "./templates/SingleProductCard.html",
+  "utf-8"
+);
+
+console.log(productCard);
+
+const server = http.createServer((req, res) => {
+  let parsedURL = url.parse(req.url, true);
+  console.log(parsedURL);
+
+  let { pathname, query } = parsedURL;
+
+  if (pathname === "/" || pathname == "/dashboard") {
+    res.end("<h1>This is Dashboard</h1>");
+  }
+
+  // Route for products html data
+  else if (pathname === "/products") {
+    let result = products; // 20 products
+
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+
+    if (query.id) {
+      result = result.filter(product => product.id == query.id);
+      let productshtmlArray = result.map(product => {
+        let item = SingleProductCard.replace("{{%IMAGELINK%}}", product.image);
+        item = item.replace("{{%TITLE%}}", product.title);
+        item = item.replace("{{%PRICE%}}", product.price);
+        item = item.replace("{{%ID%}}", product.id);
+
+        return item;
+      });
+
+      let productsContainer = `
+    <section style="display:flex;flex-wrap:wrap;justify-content: center;flex-direction:column; align-items: center;gap:10px">
+    ${productshtmlArray.join("")}
+    </section>
+    `;
+
+      res.end(productsContainer);
+    } // 1 product
+    else {
+      //? html code
+      let productshtmlArray = result.map(product => {
+        let item = productCard.replace("{{%IMAGELINK%}}", product.image);
+        item = item.replace("{{%TITLE%}}", product.title);
+        item = item.replace("{{%PRICE%}}", product.price);
+        item = item.replace("{{%ID%}}", product.id);
+
+        return item;
+      });
+
+      console.log(productshtmlArray);
+      console.log(productshtmlArray.length);
+
+      let productsContainer = `
+    <section style="display:flex;flex-wrap:wrap;justify-content: center; align-items: center;gap:10px">
+    ${productshtmlArray.join("")}
+    </section>
+    `;
+
+      res.end(productsContainer);
+    }
+  } else if (pathname === "/users") {
+    res.end("<h1>This is Products</h1>");
+  }
+
+  // Route for products api data
+  else if (pathname === "/api/products") {
+    let result = products;
+
+    if (query.id) {
+      result = result.filter(product => product.id == query.id);
+    }
+
+    res.writeHead(200, {
+      "content-type": "application/json",
+    });
+
+    res.end(
+      JSON.stringify({
+        status: "success",
+        count: result.length,
+        data: result,
+      })
+    );
+  }
+
+  // Route for users api data
+  else if (pathname === "/api/users") {
+    res.end("<h1>This is Products</h1>");
+  } else {
+    res.end("<h1 style='color:red'>Page Not Found</h1>");
+  }
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log("server has started on 127.0.0.1:8000");
+});

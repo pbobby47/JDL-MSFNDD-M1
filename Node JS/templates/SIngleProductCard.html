@@ -2,21 +2,23 @@
   class="productCard"
   style="
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 300px;
-    width: 250px;
+    height: 500px;
+    width: 800px;
     border: 1px solid gray;
     border-radius: 10px;
   "
 >
-  <div style="height: 60%">
+  <div style="height: 60%; width: 40%">
     <img src="{{%IMAGELINK%}}" alt="" height="100%" width="70%" />
   </div>
-  <div style="height: 40%">
+  <div style="height: 40%; width: 60%">
     <p>{{%TITLE%}}</p>
     <h4>{{%PRICE%}}</h4>
-    <button><a href="http://127.0.0.1:8000/products?id={{%ID%}}">View Product</a></button>
   </div>
 </article>
+
+<button style="margin: 50px auto">
+  <a href="http://127.0.0.1:8000/products">View All Products</a>
+</button>
