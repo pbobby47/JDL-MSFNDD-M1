@@ -454,7 +454,7 @@ server.listen(PORT, hostname, () => {
 - Here we created a common template and we replacing data and sending to the client.
 - we learnt about routing types 
     - File based
-    - Resourse based
+    - Resource based
 response object methods
   - setHeader
   - statusCode
@@ -843,7 +843,7 @@ Filtering data based on
     - GET - Users Page
     - GET - Single User Page, filtering based on id
 */
-
+/*
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
@@ -954,3 +954,422 @@ const server = http.createServer((req, res) => {
 server.listen(8000, "127.0.0.1", () => {
   console.log("server has started on 127.0.0.1:8000");
 });
+*/
+
+// ! ============= Events ================
+/*
+const http = require("http");
+
+const server = http.createServer();
+
+server.on("request", (req, res) => {
+  console.log(req.url);
+  res.end("Hii world");
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log("server has started");
+});
+
+server.on("close", () => {
+  console.log("Server has closed");
+});
+
+setTimeout(() => {
+  server.close();
+}, 10000);
+*/
+
+// ! ============ Custom Events ===============
+// Steps to be followed
+/*!
+// ? Step 1:
+const events = require("events");
+
+const MyEmitter = new events.EventEmitter();
+console.log(MyEmitter);
+
+// ? Step 2:
+// register events
+MyEmitter.on("someEventName", () => {
+  console.log("SomeEventName Callback executed");
+});
+
+// ? Step 3:
+MyEmitter.emit("someEventName");
+
+console.log(MyEmitter);
+*/
+
+// ? Example 1:
+/*
+const events = require("events");
+const MyEmitter = new events.EventEmitter();
+
+MyEmitter.on("sayHii", () => {
+  console.log("I am saying 'Hii'");
+});
+
+MyEmitter.on("sayBye", () => {
+  console.log("I am saying 'Bye'");
+});
+
+MyEmitter.emit("sayHii");
+MyEmitter.emit("sayHii");
+MyEmitter.emit("sayBye");
+*/
+
+// ? Example 2:
+/*
+const events = require("events");
+const MyEmitter = new events.EventEmitter();
+
+// Register events
+MyEmitter.on("sayHii", () => {
+  console.log("I am saying 'Hii'");
+});
+
+MyEmitter.on("sayHii", () => {
+  console.log("I am saying 'Hii' From callback 2");
+});
+
+MyEmitter.on("sayHii", () => {
+  console.log("I am saying 'Hii' From callback 3");
+});
+
+MyEmitter.on("sayBye", () => {
+  console.log("I am saying 'Bye'");
+});
+
+MyEmitter.on("greet", (name, course, fee, discount) => {
+  console.log(`
+    Hello ${name}, you have opted for ${course} course, which has a discount of ${discount} on ${fee}
+    `);
+});
+
+MyEmitter.on("greet", (name, course, fee, discount) => {
+  console.log("Another Operation,  i am performing for greet");
+  console.log(
+    `A new users details stored in database , name : ${name}, course: ${course}, fee: ${fee}, discount : ${discount}`
+  );
+});
+
+// call/emit events
+MyEmitter.emit("sayHii");
+MyEmitter.emit("sayHii");
+MyEmitter.emit("sayBye");
+MyEmitter.emit("greet", "Manav", "Node JS", 500, 50);
+MyEmitter.emit("greet", "Rahul", "React JS", 600, 40);
+
+console.log(MyEmitter);
+*/
+
+// ? Example 3:
+/*
+const events = require("events");
+
+const myEmitter = new events.EventEmitter();
+
+let counter = 0;
+
+myEmitter.on("increment_counter", () => {
+  console.log("increment_counter event triggered");
+  counter += 1;
+  console.log("Counter value:", counter);
+});
+
+myEmitter.on("reset_counter", () => {
+  console.log("reset_counter event triggered");
+  counter = 0;
+  console.log("Counter value:", counter);
+});
+
+myEmitter.on("decrement_counter", () => {
+  console.log("decrement_counter event triggered");
+  counter -= 1;
+  console.log("Counter value:", counter);
+});
+
+console.log(counter);
+myEmitter.emit("increment_counter");
+myEmitter.emit("increment_counter");
+myEmitter.emit("increment_counter");
+myEmitter.emit("increment_counter");
+myEmitter.emit("decrement_counter");
+myEmitter.emit("decrement_counter");
+myEmitter.emit("reset_counter");
+*/
+
+// ? Example 5:
+/*
+const events = require("events");
+const myEmitter = new events.EventEmitter();
+
+let user = {
+  userName: "guest",
+};
+
+myEmitter.on("login", (userName, userEmail, userPassword) => {
+  user = { ...user, userName, userEmail, userPassword };
+
+  console.log("user login successful");
+});
+
+myEmitter.on("logout", () => {
+  user = {};
+  console.log("logout done");
+});
+
+myEmitter.on("getdetails", () => {
+  console.log("user details are", user);
+});
+
+console.log(user);
+
+myEmitter.emit("login", "Ajit", "a@gmail.com", "#123");
+myEmitter.emit("getdetails");
+myEmitter.emit("logout");
+myEmitter.emit("getdetails");
+
+console.log(myEmitter);
+*/
+
+// ? Methods:
+/*
+emitter.addListener(eventName, listener)
+emitter.on(eventName, listener)
+emitter.emit(eventName[, ...args])
+emitter.listeners(eventName)
+emitter.off(eventName, listener)
+myEmitter.removeListener("eventName", callback);
+
+---------------
+
+addListener(): Similar to on(), adds a listener.
+removeListener(): Removes a specific listener for a given event.
+removeAllListeners(): Removes all listeners for a given event or all listeners if no event is specified.
+once(): Adds a listener that will only be called once.
+setMaxListeners(): Sets the maximum number of listeners allowed for one event.
+listeners(): Returns an array of listeners for the specified event. 
+listenerCount(): Returns the number of listeners for the specified event. 
+*/
+/*
+const events = require("events");
+const myEmitter = new events.EventEmitter();
+
+myEmitter.addListener("login", () => {
+  console.log("login....");
+});
+
+myEmitter.on("login", () => {
+  console.log("login....");
+});
+
+function sendGreetMessage() {
+  console.log("I am from sendGreetMessage function");
+}
+
+function addDataToDatabase() {
+  console.log("I am from addDataToDatabase function");
+}
+
+function addInDiscordChannel() {
+  console.log("I am from addInDiscordChannel function");
+}
+
+function randomX() {
+  console.log("I am from randomX function");
+}
+
+myEmitter.on("login", sendGreetMessage);
+myEmitter.on("login", addDataToDatabase);
+myEmitter.on("login", addInDiscordChannel);
+myEmitter.on("login", randomX);
+
+console.log(myEmitter);
+console.log(myEmitter.listeners("login"));
+
+myEmitter.removeListener("login", randomX);
+myEmitter.removeListener("login", addInDiscordChannel);
+
+console.log(myEmitter);
+*/
+
+// ! ============= OS Module =============
+/*
+os.platform(): Returns the operating system platform (e.g., 'win32', 'darwin', 'linux').
+os.arch(): Returns the CPU architecture (e.g., 'x64', 'arm64').
+os.cpus(): Returns an array of objects containing information about each logical CPU core.
+os.totalmem(): Returns the total system memory in bytes.
+os.freemem(): Returns the amount of free system memory in bytes. 
+os.networkInterfaces(): Returns an object containing network interfaces that have been assigned a network address. 
+os.userInfo(): Returns information about the current user.
+os.hostname(): Returns the hostname of the operating system.
+os.homedir(): Returns the path to the home directory of the current user. 
+os.tmpdir(): Returns the path to the operating system's default temporary file directory.
+*/
+
+/*
+const os = require("os");
+console.log(os);
+*/
+/*
+const os = require("os");
+
+console.log("Platform:", os.platform());
+console.log("Architecture:", os.arch());
+console.log("Total Memory:", os.totalmem() / (1024 * 1024 * 1024), "GB");
+console.log("Free Memory:", os.freemem() / (1024 * 1024 * 1024), "GB");
+console.log("Hostname:", os.hostname());
+console.log("User:", os.userInfo());
+*/
+
+// ! ============== Streams =================
+// ? creating huge amount of data
+// const fs = require("fs");
+
+// let data = "I am the data \n";
+
+// fs.writeFileSync("./data/large_data.txt", data.repeat(100000));
+
+// ! ============== Readable Streams =================
+// ? Case 1:
+/*
+  - createReadStream()
+  - events
+      - data
+      - end
+*/
+/*!
+const fs = require("fs");
+
+let readStream = fs.createReadStream("./data/large_data.txt", {
+  encoding: "utf-8",
+  highWaterMark: 1500,
+});
+// console.log(readStream);
+
+readStream.on("data", chunk => {
+  console.log("New Chunk of Data is received");
+  // console.log(chunk);
+  console.log(chunk.length);
+});
+
+readStream.on("end", () => {
+  console.log("End of All Chunks");
+});
+*/
+
+// ? Case 2:
+/*
+  - events 
+      - readable
+  - methods
+      - read()
+*/
+/*!
+const fs = require("fs");
+
+let readStream = fs.createReadStream("./data/large_data.txt", {
+  encoding: "utf-8",
+  highWaterMark: 1500,
+});
+// console.log(readStream);
+
+let chunkCount = 0;
+
+readStream.on("readable", () => {
+  let chunk = "";
+  chunkCount++;
+
+  // console.log("New Chunk data is: ", readStream.read());
+
+  while ((chunk = readStream.read()) != null) {
+    // enter here
+    console.log(chunk.length);
+    console.log(chunkCount);
+  }
+});
+
+readStream.on("end", () => {
+  console.log("End of All Chunks");
+});
+*/
+
+// ! ============== Writable Streams =================
+// ? Case 1:
+/*
+const fs = require("fs");
+
+const writeStream = fs.createWriteStream("./data/output_file.txt", "utf-8");
+
+writeStream.write("I am the new Chunk 1 \n");
+writeStream.write("I am the new Chunk 2 \n");
+writeStream.write("I am the new Chunk 3 \n");
+writeStream.write("I am the new Chunk 4 \n");
+writeStream.write("I am the new Chunk 5 \n");
+
+writeStream.end("End of Chunks");
+
+writeStream.on("drain", () => {
+  console.log("data draining");
+});
+
+writeStream.on("finish", () => {
+  console.log("Write streaming is completed");
+});
+
+console.log(writeStream);
+*/
+
+// ? Case 2:
+/*
+const fs = require("fs");
+
+const writeStream = fs.createWriteStream("./data/output_file.txt", "utf-8");
+
+setTimeout(() => {
+  writeStream.write("I am the new Chunk 1 \n");
+}, 1000);
+
+setTimeout(() => {
+  writeStream.write("I am the new Chunk 2 \n");
+}, 3000);
+
+setTimeout(() => {
+  writeStream.write("I am the new Chunk 3 \n");
+}, 5000);
+
+setTimeout(() => {
+  writeStream.write("I am the new Chunk 4 \n");
+}, 7000);
+
+setTimeout(() => {
+  writeStream.write("I am the new Chunk 5 \n");
+}, 9000);
+
+setTimeout(() => {
+  writeStream.end("End of Chunks");
+}, 11000);
+
+writeStream.on("drain", () => {
+  console.log("data draining");
+});
+
+writeStream.on("finish", () => {
+  console.log("Write streaming is completed");
+});
+
+// to observe the file last line ---> tail -f pathaddress
+*/
+
+// ? pipe method
+const fs = require("fs");
+
+const readStream = fs.createReadStream("./data/large_data.txt", "utf-8");
+const writeStream = fs.createWriteStream(
+  "./data/another_large_file.txt",
+  "utf-8"
+);
+
+readStream.pipe(writeStream);
