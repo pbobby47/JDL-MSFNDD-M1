@@ -1364,6 +1364,7 @@ writeStream.on("finish", () => {
 */
 
 // ? pipe method
+/*
 const fs = require("fs");
 
 const readStream = fs.createReadStream("./data/large_data.txt", "utf-8");
@@ -1373,3 +1374,188 @@ const writeStream = fs.createWriteStream(
 );
 
 readStream.pipe(writeStream);
+*/
+
+// ! ==================== Path Module ==================
+// It helps us to work with directories and files regarding the path.
+// The node:path module provides utilities for working with file and directory paths
+/*
+const path = require("path");
+// console.log(path);
+
+// ? basename:
+console.log("basename :", path.basename("./data/products.json"));
+console.log("basename :", path.basename("./templates/ProductCard.html"));
+
+// ? dirname:
+console.log("dirname :", path.dirname("./data/products.json"));
+console.log("dirname :", path.dirname("./templates/ProductCard.html"));
+
+// ? extname:
+console.log("extname :", path.extname("./data/users.json"));
+console.log("extname :", path.extname("./data/large_data.txt"));
+
+// console.log(__dirname)
+// console.log(__filename);
+
+// ? join:
+// It will join the path adddress provided.
+
+console.log("Joined Path:", path.join("/pathA", "/pathB", "/pathC"));
+console.log(
+  "Joined Path:",
+  path.join("/data", "/usersData", "/regularUsers", "/data.json")
+);
+console.log(
+  "Joined Path:",
+  path.join("/data", "/usersData/regularUsers", "/data.json")
+);
+
+console.log(
+  "Joined Path:",
+  path.join("data", "usersData/regularUsers", "data.json")
+);
+
+// ? resolve:
+// It will do the task as same as join method.
+// The only difference is
+// Join method result ----> relative path
+// resolve method result ----> absolute path
+// The path.resolve() method resolves a sequence of paths or path segments into an absolute path.
+
+console.log("Resolved Path:", path.resolve("./data/products.json"));
+console.log(
+  "Resolved Path:",
+  path.resolve("./user-defined modules/calculator.js")
+);
+console.log(
+  "Resolved Path:",
+  path.resolve("/folderA", "folderB", "folderC", "xyz.txt")
+);
+console.log(
+  "Resolved Path:",
+  path.resolve("./folderA", "folderB", "folderC", "xyz.txt")
+);
+
+// ? relative:
+// The path.relative() method returns the relative path from from to to based on the current working directory
+
+console.log(
+  "relative path:",
+  path.relative("./data/products.json", "./data/users.json")
+);
+
+console.log(
+  "relative path:",
+  path.relative(
+    "./user-defined modules/calculator.js",
+    "./templates/SIngleProductCard.html"
+  )
+);
+
+console.log(
+  "relative path:",
+  path.relative("./data/large_data.txt", "./data/output_file.txt")
+);
+
+// ? normalize:
+// The path.normalize() method normalizes the given path, resolving '..' and '.' segments.
+
+// path.normalize('C:\\temp\\\\foo\\bar\\..\\');
+// Returns: 'C:\\temp\\foo\\'
+
+console.log(
+  "normalize :",
+  path.normalize(
+    "./node_modules/call-bound/index.js/../package.json/../index.d.ts"
+  )
+);
+
+// ? isAbsolute:
+// It will check the path address is absolute or relative.
+
+// path.isAbsolute('//server');    // true
+// path.isAbsolute('\\\\server');  // true
+// path.isAbsolute('C:/foo/..');   // true
+// path.isAbsolute('C:\\foo\\..'); // true
+// path.isAbsolute('bar\\baz');    // false
+// path.isAbsolute('bar/baz');     // false
+// path.isAbsolute('.');           // false
+
+console.log("isAbsoulte :", path.isAbsolute("./data/another_large_file.txt")); // false
+
+console.log("isAbsoulte :", path.isAbsolute("/data/another_large_file.txt")); // true
+
+console.log("isAbsoulte :", path.isAbsolute("data/another_large_file.txt")); // false
+
+// ? parse:
+// The path.parse() method returns an object whose properties represent significant elements of the path.
+// It will convert a path into an object.
+
+console.log("parsed Path:", path.parse("./data/products.json"));
+console.log("parsed Path:", path.parse("./templates/index.html"));
+
+// ? format:
+// It is reverse to a parse method
+// It will convert an object into path.
+// The path.format() method returns a path string from an object. This is the opposite of path.parse().
+
+console.log(
+  "format to path:",
+  path.format({
+    root: "",
+    dir: "./data",
+    base: "products.json",
+    ext: ".json",
+    name: "products",
+  })
+);
+
+console.log(
+  "format to path:",
+  path.format({
+    root: "",
+    dir: "./templates",
+    base: "index.html",
+    ext: ".html",
+    name: "index",
+  })
+);
+*/
+
+// ! ======================== Event Loop In Node JS ========================
+
+// ? Case 1:
+console.log("start");
+var app = "This is my app";
+console.log(app);
+function A() {
+  var a = 10;
+  console.log(a);
+  console.log("I am function A");
+}
+
+function B() {
+  var b = 20;
+  console.log(b);
+  A();
+  console.log("I am function B");
+}
+
+function C() {
+  var c = 30;
+  console.log(c);
+  B();
+  console.log("I am function C");
+}
+
+function D() {
+  var d = 40;
+  console.log(d);
+  C();
+  console.log("I am function D");
+}
+
+D();
+
+console.log("end");
