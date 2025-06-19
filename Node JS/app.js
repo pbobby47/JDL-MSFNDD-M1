@@ -1524,8 +1524,32 @@ console.log(
 */
 
 // ! ======================== Event Loop In Node JS ========================
+/*!
+----- Phases Overview ------
+- timers: 
+  this phase executes callbacks scheduled by setTimeout() and setInterval().
+- pending callbacks: 
+  executes I/O callbacks deferred to the next loop iteration.
+- idle, prepare: 
+  only used internally.
+- poll: 
+  retrieve new I/O events; execute I/O related callbacks (almost all with the exception of close callbacks, the ones scheduled by timers, and setImmediate()); node will block here when appropriate.
+- check: 
+  setImmediate() callbacks are invoked here.
+- close callbacks: 
+  some close callbacks, e.g. socket.on('close', ...)
+
+  // ! Reference: 
+ 1. https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick
+
+ 2. https://www.builder.io/blog/visual-guide-to-nodejs-event-loop
+
+ 3. https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fspkr1vcojuaf9ho0yy06.png
+
+  */
 
 // ? Case 1:
+/*
 console.log("start");
 var app = "This is my app";
 console.log(app);
@@ -1559,3 +1583,299 @@ function D() {
 D();
 
 console.log("end");
+*/
+
+// ? Case 2:
+// Synchronous Tasks
+/*
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+var b = 20;
+
+sayHii();
+sayBye();
+
+console.log(a);
+console.log(b);
+*/
+
+// ? Case 3:
+// Synchronous Tasks + Timers
+/*
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+setTimeout(function Timer0() {
+  console.log("I am timer 0s");
+}, 0);
+
+setTimeout(function Timeer2() {
+  console.log("I am timer 2s");
+}, 2000);
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+var b = 20;
+
+setInterval(function IntervalTimer1_5() {
+  console.log("I am Interval 1.5s ");
+}, 1500);
+
+setTimeout(function Timer3() {
+  console.log("I am timer 3s");
+}, 3000);
+
+sayHii();
+sayBye();
+
+setTimeout(function Timer1() {
+  console.log("I am timer 1s");
+}, 1000);
+
+setTimeout(function Timer5() {
+  console.log("I am timer 5s");
+}, 5000);
+
+console.log(a);
+console.log(b);
+*/
+
+// ? Case 4:
+// Synchronous Tasks + Timer phase + poll phase
+/*
+const fs = require("fs");
+
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+setTimeout(function Timer0() {
+  console.log("I am timer 0s");
+}, 0);
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+var b = 20;
+
+fs.readFile("./data/products.json", () => {
+  console.log("I am from Fs Callback function");
+});
+
+setTimeout(function Timer3() {
+  console.log("I am timer 3s");
+}, 3000);
+
+setTimeout(function Timer1() {
+  console.log("I am timer 1s");
+}, 1000);
+
+sayHii();
+sayBye();
+
+console.log(a);
+console.log(b);
+*/
+
+// ? Case 5:
+// Synchronous Tasks + Timer phase + poll phase + check phase
+/*
+const fs = require("fs");
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 1 ");
+});
+
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+setTimeout(function Timer0() {
+  console.log("I am timer 0s");
+}, 0);
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+var b = 20;
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 2 ");
+});
+
+fs.readFile("./data/products.json", () => {
+  console.log("I am from Fs Callback function");
+});
+
+setTimeout(function Timer3() {
+  console.log("I am timer 3s");
+}, 3000);
+
+setTimeout(function Timer1() {
+  console.log("I am timer 1s");
+}, 1000);
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 3 ");
+});
+
+sayHii();
+sayBye();
+
+console.log(a);
+console.log(b);
+*/
+
+// ? Case 6:
+// Synchronous Tasks + Timer phase + poll phase + check phase + micro Task Queue (process.nextTick)
+/*
+const fs = require("fs");
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 1 ");
+});
+
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+setTimeout(function Timer0() {
+  console.log("I am timer 0s");
+}, 0);
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+var b = 20;
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 0");
+});
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 2 ");
+});
+
+fs.readFile("./data/products.json", () => {
+  console.log("I am from Fs Callback function");
+});
+
+setTimeout(function Timer3() {
+  console.log("I am timer 3s");
+}, 3000);
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 1");
+});
+
+setTimeout(function Timer1() {
+  console.log("I am timer 1s");
+}, 1000);
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 3 ");
+});
+
+sayHii();
+sayBye();
+
+console.log(a);
+console.log(b);
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 2");
+});
+*/
+
+// ? Case 7:
+// Synchronous Tasks + Timer phase + poll phase + check phase + micro Task Queue (process.nextTick) +  micro Task Queue (promise callbacks)
+
+const fs = require("fs");
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 1 ");
+});
+
+function sayHii() {
+  console.log("I am function Hii");
+}
+
+var a = 10;
+
+setTimeout(function Timer0() {
+  console.log("I am timer 0s");
+}, 0);
+
+function sayBye() {
+  console.log("I am function Bye");
+}
+
+Promise.resolve().then(() => {
+  console.log("I am Promise Resolve callback - 2");
+});
+
+var b = 20;
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 0");
+});
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 2 ");
+});
+
+fs.readFile("./data/products.json", () => {
+  console.log("I am from Fs Callback function");
+});
+
+setTimeout(function Timer3() {
+  console.log("I am timer 3s");
+}, 3000);
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 1");
+});
+
+setTimeout(function Timer1() {
+  console.log("I am timer 1s");
+}, 1000);
+
+setImmediate(() => {
+  console.log("I am setImmediate Callback - 3 ");
+});
+
+sayHii();
+sayBye();
+
+console.log(a);
+console.log(b);
+
+process.nextTick(() => {
+  console.log("I am process.nextTick Callback - 2");
+});
+
+Promise.resolve().then(() => {
+  console.log("I am Promise Resolve callback - 2");
+});
