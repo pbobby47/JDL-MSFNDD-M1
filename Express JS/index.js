@@ -25,7 +25,7 @@ app.listen(8000, "127.0.0.1", () => {
 */
 
 // ? Case 2:
-// === Testing Api's using POSTMAN
+// === Testing Api's using POSTMAN ===
 /*
 const express = require("express");
 const app = express();
@@ -172,7 +172,7 @@ app.listen(8000, () => {
 
 // ? Case 3:
 // Performed all CRUD operations on Products data
-
+/*
 const express = require("express");
 const app = express();
 const fs = require("fs");
@@ -234,6 +234,232 @@ app
   .get("/api/v1/products/10", getSingleProduct)
   .patch("/api/v1/update_product", updateProduct)
   .delete("/api/v1/delete_product", deleteProduct);
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ======== Route Path Matching ========
+// app.METHOD(Path, Handler);
+/*
+  ? , + , * , [] , ()
+
+  ? - is optional
+  + - previous character for n no.of times
+  * - any characters
+  [] - It will provide a range
+      - [a-m]
+      - [0-9]
+      - [0-5]
+  () - it will group the characters.
+
+ - To consider optional routes we have to use 
+      - ? in v4
+      - {} in v5
+
+  - app.get(["/admin", "/owner", "/partner"], (req, res) => {
+        res.send("Now you are in Admin / owner / partner view");
+    });
+
+
+  - To pass any character , we have to use 
+     - * in v4
+     - /*splat in v5
+*/
+/*!
+const express = require("express");
+const app = express();
+
+// app.get("/pro(ducts)?", () => {});
+
+// app.get("/*splat", (req, res) => {
+//   res.send("ok");
+// });
+
+app.get("/product{s}", (req, res) => {
+  res.send("Routing matching with product{s} route");
+});
+
+app.get("/hello{world}", (req, res) => {
+  res.send("Routing matching with /hello{world} route");
+});
+
+app.get("/user{dashboard}", (req, res) => {
+  res.send("Routing matching with /user{dashboard} route");
+});
+
+app.get("/sahil/", (req, res) => {
+  res.send("sahil is included in path");
+});
+
+// app.get("/buz+", (req, res) => {
+//   res.send("Route matching to buz / buzz / buzzz / buzzzz / ...")
+// })
+
+// app.get("/hello+world", (req, res) => {
+//   res.send(
+//     "Route matching to helloworld / hellooworld / helloooworld / hellooooworld / helloooooworld / ..."
+//   );
+// });
+
+app.get(["/admin", "/owner", "/partner"], (req, res) => {
+  res.send("Now you are in Admin / owner / partner view");
+});
+
+app.listen(8000, () => {
+  console.log("Server has started...");
+});
+*/
+
+// ! ======= Request Params, Request Body, Request Query =========
+/*!
+const express = require("express");
+const app = express();
+
+app.get("/products", (req, res) => {
+  res.json({
+    status: "success",
+    data: "All Products",
+  });
+});
+
+// ? Example 1
+// app.get("/products/:x/:y/:z", (req, res) => {
+//   console.log(req.params);
+//   res.json({
+//     status: "success",
+//     data: `Single Products with `,
+//   });
+// });
+
+// ? Example 2
+// app.get("/products/:gender/:catergory/:productNumber", (req, res) => {
+//   console.log(req.params);
+//   res.json({
+//     status: "success",
+//     data: `Single Products with `,
+//   });
+// });
+
+// ? Example 3
+// app.get("/students/:id", (req, res) => {
+//   console.log(req.params);
+
+//   // let id = req.params.id * 1; // type casting ---> string * 1 --> Number
+//   let id = +req.params.id; // type casting ---> +string --> Number
+
+//   console.log(id);
+//   console.log(typeof id);
+
+//   res.json({
+//     status: "success",
+//     data: `Single Products with `,
+//   });
+// });
+
+// ? Example 4:
+// creating new student
+// app.use(express.json()); // It will parse req.body into JavaScript code.
+
+// app.get("/students", (req, res) => {
+//   res.send("All Students Data will be sent");
+// });
+
+// app.post("/students", (req, res) => {
+//   console.log(req.body);
+
+//   res.send("New Student Added");
+// });
+
+
+// ? Example 5:
+
+app.get("/students", (req, res) => {
+  // console.log(req);
+  console.log(req.body);
+  console.log(req.params);
+  console.log(req.query);
+
+  res.send("All Ok");
+});
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ========= Students Data Management ============
+/*
+Routes 
+  - GET
+      - /students
+      - /students/:id
+
+  - POST
+      - /students
+
+  - PATCH
+      - /students/:id
+
+  - DELETE
+      - /students/:id
+*/
+
+const fs = require("fs");
+const express = require("express");
+const app = express();
+
+let students = JSON.parse(fs.readFileSync("./data/students.json", "utf-8"));
+
+app.use(express.json()); // Parsing JSON into JS.
+
+app.get("/students", (req, res) => {
+  res.status(200).json({
+    status: "Success",
+    message: "All Students details are here",
+    count: students.length,
+    data: students,
+  });
+});
+
+app.post("/students", (req, res) => {
+  console.log(req.body);
+
+  let lastStudentID = students[students.length - 1].id;
+
+  let newStudent = { id: lastStudentID + 1, ...req.body };
+
+  students.push(newStudent);
+
+  fs.writeFile("./data/students.json", JSON.stringify(students), () => {
+    console.log("New Student Added in students.json file");
+  });
+
+  res.status(201).json({
+    status: "Success",
+    message: "A new Student is Added",
+    data: newStudent,
+  });
+});
+
+app.get("/students/:id", (req, res) => {
+  console.log(req.params);
+
+  let id = req.params.id * 1;
+
+  let student = students.find(obj => obj.id == id);
+  // console.log(student);
+
+  res.status(200).json({
+    status: "success",
+    message: `Student details with id : ${id}`,
+    data: student,
+  });
+});
+
+app.patch("/students/:id", (req, res) => {});
+app.delete("/students/:id", (req, res) => {});
 
 app.listen(8000, () => {
   console.log("server has started");
