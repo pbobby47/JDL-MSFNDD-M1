@@ -13,27 +13,18 @@
     "firstName": "Vamsi",
     "lastName": "Narayana",
     "course": "MERN Stack",
-    "isPlaced": false,
+    "isPlaced": true,
     "gmail": "v@gmail.com",
     "contact": 7874561230
-  },
-  {
-    "id": 3,
-    "firstName": "Ajit",
-    "lastName": "Kumar",
-    "course": "Java Full Stack",
-    "isPlaced": true,
-    "gmail": "a@gmail.com",
-    "contact": 6874561230
   },
   {
     "id": 4,
     "firstName": "Sahil",
     "lastName": "Sharma",
-    "course": "Python Full Stack",
+    "course": "Data Science",
     "isPlaced": true,
     "gmail": "s@gmail.com",
-    "contact": 8874561230
+    "contact": 9632587410
   },
   {
     "id": 5,
