@@ -621,7 +621,7 @@ let deleteStudent = (req, res) => {
 
 // ? app.route():
 // It will provide the common route for all methods
-// later we can chain the method
+// later we can chain the methods
 
 app.route("/students").get(getAllStudents).post(addNewStudent);
 
@@ -694,7 +694,7 @@ app.listen(8000, () => {
 */
 
 // ? Case 2:
-/*
+/*!
 const express = require("express");
 const app = express();
 
@@ -734,7 +734,7 @@ app.listen(8000, () => {
 
 // ? Case 3:
 // app.use() vs app.all()
-
+/*!
 const express = require("express");
 const app = express();
 
@@ -769,6 +769,7 @@ app.use(logger, requestedAt, (req, res) => {
 app.listen(8000, () => {
   console.log("server has started");
 });
+*/
 
 // ! ===================== Task ============================
 /*
@@ -783,6 +784,9 @@ app.listen(8000, () => {
         - /students
             - using middleware add createdAt feild in req.body object
             - this have store in students.json file too.
+            - Validate email and mobile number 
+                - if exists show student already existing
+                - else add.
 
     PATCH
         - /students/:id
@@ -794,3 +798,380 @@ app.listen(8000, () => {
           - create one file name students_deleted_data.json
           - Using middle add the deleted students data in the above file.
 */
+/*
+const fs = require("fs");
+const express = require("express");
+const app = express();
+
+let students = JSON.parse(fs.readFileSync("./data/students.json", "utf-8"));
+let deleteStudents = JSON.parse(
+  fs.readFileSync("./data/students_deleted_data.json", "utf-8")
+);
+
+// ? Middlewares
+app.use(express.json()); // Parsing JSON into JS.
+
+app.use((req, res, next) => {
+  console.log("A new Request Received at : ", new Date());
+
+  next();
+});
+
+// ? Middleware functions
+let createdAt = (req, res, next) => {
+  console.log("Before - ", req.body);
+
+  // req.body.createdAt = new Date();
+  // req.body = { createdAt: new Date() };
+
+  req.body = { ...req.body, createdAt: new Date() };
+
+  console.log("After - ", req.body);
+
+  next();
+};
+
+let updatedAt = (req, res, next) => {
+  console.log("Before - ", req.body);
+
+  // req.body.createdAt = new Date();
+  // req.body = { createdAt: new Date() };
+
+  req.body = { ...req.body, updatedAt: new Date() };
+
+  console.log("After - ", req.body);
+
+  next();
+};
+
+let deletedStudentsMiddleware = (req, res, next) => {
+  let id = req.params.id * 1;
+
+  let studentObj = students.find(obj => obj.id == id);
+  console.log(studentObj);
+
+  deleteStudents.push(studentObj);
+
+  fs.writeFile(
+    "./data/students_deleted_data.json",
+    JSON.stringify(deleteStudents),
+    () => {
+      console.log("Deleted Students Details are updated into json file");
+    }
+  );
+
+  next();
+};
+
+let validateStudent = (req, res, next) => {
+  console.log("I am validateStudent middlware");
+
+  let gmail = req.body.gmail;
+  let contact = req.body.contact;
+
+  if (!gmail) {
+    res.json({
+      status: "Fail",
+      reason: "Gmail is Mandatory",
+    });
+  } else if (!contact) {
+    res.json({
+      status: "Fail",
+      reason: "Contact is Mandatory",
+    });
+  } else {
+    let student = students.find(
+      obj => obj.gmail == gmail || obj.contact == contact
+    );
+
+    if (student) {
+      res.json({
+        status: "fail",
+        reason: "Gmail or Mobile No is already Existing",
+      });
+    } else {
+      next();
+    }
+  }
+};
+
+// ? Route Handlers
+let getAllStudents = (req, res) => {
+  res.status(200).json({
+    status: "Success",
+    message: "All Students details are here",
+    count: students.length,
+    data: students,
+  });
+};
+
+let addNewStudent = (req, res) => {
+  console.log(req.body);
+
+  let lastStudentID = students[students.length - 1].id;
+
+  let newStudent = { id: lastStudentID + 1, ...req.body };
+
+  students.push(newStudent);
+
+  fs.writeFile("./data/students.json", JSON.stringify(students), () => {
+    console.log("New Student Added in students.json file");
+  });
+
+  res.status(201).json({
+    status: "Success",
+    message: "A new Student is Added",
+    data: newStudent,
+  });
+};
+
+let getSingleStudent = (req, res) => {
+  console.log(req.params);
+
+  let id = req.params.id * 1;
+
+  let student = students.find(obj => obj.id == id);
+  // console.log(student);
+
+  res.status(200).json({
+    status: "success",
+    message: `Student details with id : ${id}`,
+    data: student,
+  });
+};
+
+let updateStudent = (req, res) => {
+  console.log(req.body);
+  let id = req.params.id * 1;
+
+  let studentObj = students.find(obj => obj.id == id);
+  console.log(studentObj);
+
+  let index = students.indexOf(studentObj);
+  console.log(index);
+
+  let udpatedObj = { ...studentObj, ...req.body };
+  console.log(udpatedObj);
+
+  students[index] = udpatedObj;
+
+  fs.writeFile("./data/students.json", JSON.stringify(students), () => {
+    console.log("Student Details Udpated in Students.json file");
+  });
+
+  res.status(202).json({
+    status: "Success",
+    message: "Student details upated Successfully",
+    data: {
+      prevData: studentObj,
+      updatedData: udpatedObj,
+    },
+  });
+};
+
+let deleteStudent = (req, res) => {
+  let id = req.params.id * 1;
+
+  let index = students.findIndex(obj => obj.id == id);
+  console.log(index);
+
+  students.splice(index, 1);
+
+  fs.writeFile("./data/students.json", JSON.stringify(students), () => {
+    console.log("Student details removed from student.json file");
+  });
+
+  res.status(200).json({
+    status: "Success",
+    message: "Student details deleted Succefully",
+  });
+};
+
+// ? Routes
+app
+  .route("/students")
+  .get(getAllStudents)
+  .post(createdAt, validateStudent, addNewStudent);
+
+app
+  .route("/students/:id")
+  .get(getSingleStudent)
+  .patch(updatedAt, updateStudent)
+  .delete(deletedStudentsMiddleware, deleteStudent);
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ============== Patterns of Middlewares =============
+/*
+app.get(m1 , m2, m3, ...)
+app.use(m1 , m2, m3, ...)
+app.all(m1 , m2, m3, ...)
+app.use([m1 , m2, m3, ...]);
+app.use("/", [m1 , m2, m3, ...]);
+app.use("/", initialMiddlware,  [m1 , m2, m3, ...]);
+app.use("/", initialMiddlware, [m1 , m2, m3, ...], lastMidddleware);
+app.use("/", initialMiddlware, [m1 , m2], lastMidddleware);
+*/
+
+// ! ==================== Types of Middlewares ================
+/*
+Link: https://expressjs.com/en/guide/using-middleware.html
+
+An Express application can use the following types of middleware:
+
+  - Application-level middleware
+  - Router-level middleware
+  - Error-handling middleware
+  - Built-in middleware
+  - Third-party middleware
+
+*/
+
+// ? Case 1:
+/*
+const express = require("express");
+const app = express();
+const router = express.Router();
+
+// ROUTE Handlers
+let getStudents = (req, res) => {
+  res.send("All Students Details are here");
+};
+
+let getSingleStudent = (req, res) => {
+  res.send("I am from getSingleStudent");
+};
+
+let createStudent = (req, res) => {
+  res.send("I am from createStudent");
+};
+
+let updateStudent = (req, res) => {
+  res.send("I am from updateStudent");
+};
+
+let deleteStudent = (req, res) => {
+  res.send("I am from deleteStudent");
+};
+
+// ROUTES:
+router.route("/").get(getStudents).post(createStudent);
+
+router
+  .route("/:id")
+  .get(getSingleStudent)
+  .patch(updateStudent)
+  .delete(deleteStudent);
+
+app.use("/api/v1/students", router);
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ? Case 2:
+// Here we created for Trainers, HRS, Students
+
+const express = require("express");
+const app = express();
+const studentsRouter = express.Router();
+const trainersRouter = express.Router();
+const hrsRouter = express.Router();
+
+// Student ROUTE Handlers
+let getStudents = (req, res) => {
+  res.send("All Students Details are here");
+};
+
+let getSingleStudent = (req, res) => {
+  res.send("I am from getSingleStudent");
+};
+
+let createStudent = (req, res) => {
+  res.send("I am from createStudent");
+};
+
+let updateStudent = (req, res) => {
+  res.send("I am from updateStudent");
+};
+
+let deleteStudent = (req, res) => {
+  res.send("I am from deleteStudent");
+};
+
+// Trainer ROUTE Handlers
+let getTrainers = (req, res) => {
+  res.send("I am from getTrainers");
+};
+
+let getSingleTrainer = (req, res) => {
+  res.send("I am from getSingleTrainer");
+};
+
+let createTrainer = (req, res) => {
+  res.send("I am from createTrainer");
+};
+
+let updateTrainer = (req, res) => {
+  res.send("I am from updateTrainer");
+};
+
+let deleteTrainer = (req, res) => {
+  res.send("I am from deleteTrainer");
+};
+
+// HR ROUTE Handlers
+let getHRs = (req, res) => {
+  res.send("I am from getHRs");
+};
+
+let getSingleHR = (req, res) => {
+  res.send("I am from getSingleHR");
+};
+
+let createHR = (req, res) => {
+  res.send("I am from createHR");
+};
+
+let updateHR = (req, res) => {
+  res.send("I am from updateHR");
+};
+
+let deleteHR = (req, res) => {
+  res.send("I am from deleteHR");
+};
+
+// Students ROUTES:
+studentsRouter.route("/").get(getStudents).post(createStudent);
+
+studentsRouter
+  .route("/:id")
+  .get(getSingleStudent)
+  .patch(updateStudent)
+  .delete(deleteStudent);
+
+// Trainers ROUTES:
+trainersRouter.route("/").get(getTrainers).post(createTrainer);
+
+trainersRouter
+  .route("/:id")
+  .get(getSingleTrainer)
+  .patch(updateTrainer)
+  .delete(deleteTrainer);
+
+// HRS ROUTES:
+hrsRouter.route("/").get(getHRs).post(createHR);
+
+hrsRouter.route("/:id").get(getSingleHR).patch(updateHR).delete(deleteHR);
+
+app.use("/api/v1/students", studentsRouter);
+app.use("/api/v1/trainers", trainersRouter);
+app.use("/api/v1/hr", hrsRouter);
+
+app.listen(8000, () => {
+  console.log("server has started");
+});

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 2,
+    "firstName": "Vamsi",
+    "lastName": "Narayana",
+    "course": "MERN Stack",
+    "isPlaced": false,
+    "gmail": "v@gmail.com",
+    "contact": 7874561230,
+    "updatedAt": "2025-06-26T06:20:35.745Z"
+  }
+]
