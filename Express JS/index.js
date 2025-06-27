@@ -798,7 +798,7 @@ app.listen(8000, () => {
           - create one file name students_deleted_data.json
           - Using middle add the deleted students data in the above file.
 */
-/*
+/*!
 const fs = require("fs");
 const express = require("express");
 const app = express();
@@ -1006,7 +1006,7 @@ app.listen(8000, () => {
 
 // ! ============== Patterns of Middlewares =============
 /*
-app.get(m1 , m2, m3, ...)
+app.anymethod(m1 , m2, m3, ...)
 app.use(m1 , m2, m3, ...)
 app.all(m1 , m2, m3, ...)
 app.use([m1 , m2, m3, ...]);
@@ -1027,11 +1027,10 @@ An Express application can use the following types of middleware:
   - Error-handling middleware
   - Built-in middleware
   - Third-party middleware
-
 */
 
 // ? Case 1:
-/*
+/*!
 const express = require("express");
 const app = express();
 const router = express.Router();
@@ -1075,7 +1074,7 @@ app.listen(8000, () => {
 
 // ? Case 2:
 // Here we created for Trainers, HRS, Students
-
+/*
 const express = require("express");
 const app = express();
 const studentsRouter = express.Router();
@@ -1171,6 +1170,91 @@ hrsRouter.route("/:id").get(getSingleHR).patch(updateHR).delete(deleteHR);
 app.use("/api/v1/students", studentsRouter);
 app.use("/api/v1/trainers", trainersRouter);
 app.use("/api/v1/hr", hrsRouter);
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ================== Params Middleware ====================
+/*!
+const express = require("express");
+const app = express();
+
+// ~ Param middleware 1
+// app.param("id", (req, res, next, value) => {
+//   console.log("I am from param middleware");
+
+//   req.body = { ...req.body, studentID: value };
+
+//   console.log(req.body);
+//   next();
+// });
+
+// ~ Param middleware 2
+// app.param("libraryname", (req, res, next, value) => {
+//   console.log("New Request have to proccess to get the details of", value);
+
+//   next();
+// });
+
+// ~ Param middleware 3
+app.param(["id", "libraryname"], (req, res, next, value) => {
+  console.log("A new Request is processed", value);
+
+  next();
+});
+
+app.get("/students", (req, res) => {
+  res.send("All students details");
+});
+
+app.get("/students/:id", (req, res) => {
+  res.send("Single student details");
+});
+
+app.get("/trainers", (req, res) => {
+  res.send("All Trainers details");
+});
+
+app.get("/trainers/:id", (req, res) => {
+  res.send("Single Trainer details");
+});
+
+app.get("/library/:libraryname", (req, res) => {
+  res.send("Single Library details");
+});
+
+app.get("/library/:id/:libraryname", (req, res) => {
+  res.send("Single Library details");
+});
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ============= How to Serve Static Files from Server =================
+const express = require("express");
+const app = express();
+
+app.use(express.static("./public"));
+
+app.get("/home", (req, res) => {
+  res.send(`
+    <h1>This is from Home Route</h1>
+    <p>Hello How are you...</p>
+    <img src="https://cdn.pixabay.com/photo/2025/04/16/06/25/duck-9536937_1280.jpg" height="200px">    
+    `);
+});
+
+app.get("/about", (req, res) => {
+  res.send("This is from About Route");
+});
+
+app.get("/contact", (req, res) => {
+  res.send("This is from Contact Route");
+});
 
 app.listen(8000, () => {
   console.log("server has started");
