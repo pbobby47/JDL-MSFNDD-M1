@@ -1,5 +1,8 @@
-let ar = [10, 20, 30, 40, 50];
+let btn = document.querySelector("button");
+console.log(btn);
 
-for (let i of ar) {
-  console.log(ar);
-}
+let text = document.querySelector("title").innerHTML;
+
+btn.onclick = function () {
+  alert(`Hello , we are in ${text}`);
+};

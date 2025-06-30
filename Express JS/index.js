@@ -1234,28 +1234,104 @@ app.listen(8000, () => {
 });
 */
 
-// ! ============= How to Serve Static Files from Server =================
+// ! ================== Third Party Middleware ============
+// ? morgon middleware
+// Link: https://expressjs.com/en/resources/middleware/morgan.html
+// Link:https://www.npmjs.com/package/morgan
+// Link: https://github.com/expressjs/morgan/tree/master
+// Link: https://github.com/expressjs/morgan/blob/master/index.js#L59
+/*
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 
-app.use(express.static("./public"));
+app.use(morgan("dev"));
 
-app.get("/home", (req, res) => {
-  res.send(`
-    <h1>This is from Home Route</h1>
-    <p>Hello How are you...</p>
-    <img src="https://cdn.pixabay.com/photo/2025/04/16/06/25/duck-9536937_1280.jpg" height="200px">    
-    `);
-});
-
-app.get("/about", (req, res) => {
-  res.send("This is from About Route");
-});
-
-app.get("/contact", (req, res) => {
-  res.send("This is from Contact Route");
+app.get("/", (req, res) => {
+  res.send("Ok");
 });
 
 app.listen(8000, () => {
   console.log("server has started");
 });
+*/
+
+// ! ============= How to Serve Static Files from Server =================
+/*
+const express = require("express");
+const path = require("path");
+const app = express();
+
+// app.use(express.static("public"));
+// app.use(express.static("./public"));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.send(`
+    <p>Open Home Page - <a href="./home">Click Here</a></p>
+    <p> Open About Page - <a href="./about">Click Here</a> </p>
+    <p> Open Contact Page - <a href="./contact">Click Here</a> </p>
+    `);
+});
+
+app.get("/home", (req, res) => {
+  let pathAddress = path.join(__dirname, "/public/templates/home.html");
+
+  console.log(pathAddress);
+  res.sendFile(pathAddress);
+});
+
+app.get("/about", (req, res) => {
+  let pathAddress = path.join(__dirname, "/public/templates/about.html");
+
+  console.log(pathAddress);
+  res.sendFile(pathAddress);
+});
+
+app.get("/contact", (req, res) => {
+  let pathAddress = path.join(__dirname, "/public/templates/contact.html");
+
+  console.log(pathAddress);
+  res.sendFile(pathAddress);
+});
+
+app.listen(8000, () => {
+  console.log("server has started");
+});
+*/
+
+// ! ================= Environment Variables ===================
+/*
+- The .env file in an Express.js application is a plain text file used to store environment variables.
+- These variables are typically used to configure application settings, especially sensitive information like API keys, database credentials, and other secrets, keeping them separate from the main codebase.
+- This practice enhances security and makes the application more flexible and production-ready.
+
+How to Use:
+- The dotenv package is commonly used to load variables from the .env file into process.env, making them accessible within the application. 
+- It can be installed using npm install dotenv.
+
+*/
+/*
+require("dotenv").config();
+require("dotenv").config({ path: "./auth.env" });
+
+const express = require("express");
+const app = express();
+
+console.log(process.env.USER_NAME);
+console.log(process.env.MONGO_URI);
+console.log(process.env.PASSWORD);
+console.log(process.env.PORT);
+console.log(process.env.API_KEY);
+console.log(process.env.AUTH_USER);
+console.log(process.env.AUTH_PASSWORD);
+
+app.get("/", (req, res) => {
+  res.send("Ok");
+});
+
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log("server has started on the port", port);
+});
+*/
