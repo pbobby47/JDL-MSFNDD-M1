@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <!-- 
+  <h1>Hello I am from <%= page %> file</h1>
+  <hr>
+  <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde nemo recusandae non a reiciendis, dolorum deleniti eum tenetur cum, esse totam quis error? Enim corporis obcaecati facere vero vel voluptatem?</p> -->
+
+  <!-- ! ==== Data Types ====  -->
+  <!-- ? Strings, Numbers, Boolean -->
+  <p><b>Page : </b> <%= page  %> </p>
+  <p><b>PageInfo : </b> <%= pageInfo  %> </p>
+  <p><b>PageInfo2 : </b> <%= pageInfo2  %> </p>
+  <p><b>PageInfo3 : </b> <%- pageInfo2  %> </p>
+  <p><b>Name : </b> <%= userName  %> </p>
+  <p><b>userEmail : </b> <%= userEmail  %> </p>
+  <p><b>userNo : </b> <%= userNo  %> </p>
+  <p><b>isNodeStudent : </b> <%= isNodeStudent  %> </p>
+
+  <!-- ? Arrays -->
+  <p><b>Students :</b> <%= students %></p>
+  <p><b>Students :</b> <%= students.join(" , ") %></p>
+  <p><b>Students :</b> <%= students.join(" _ ") %></p>
+
+  <!-- ? Objects -->
+  <p><b>Trainer Name : </b> <%= trainer.trainerName %> </p>
+  <p><b>Trainer Email : </b> <%= trainer.trainerEmail %> </p>
+  <p><b>Subjects : </b> <%= trainer.subjects %> </p>
+  <p><b>Subjects : </b> <%= trainer.subjects.join(" , ") %> </p>
+
+  <!-- ? Undefined, null, bigint -->
+  <p><b>isMarried : </b> <%= isMarried %> </p> <!-- It will not display anything -->
+  <p><b>mockRatings : </b> <%= mockRatings %> </p> <!-- It will not display anything -->
+  <p><b>salary : </b> <%= salary %> </p>
+
+  <!-- ! ==== Conditional Statements ==== -->
+  <!-- ? if condition -->
+  <% if (isPlaced) { %>
+  <p>Pranchi got Placed</p>
+  <% } %>
+
+  <!-- ? if else condition -->
+  <% if (isPlaced) { %>
+  <p><%= userName %> Got Placed</p>
+  <% } else { %>
+  <p><%= userName %> Not Placed Yet</p>
+  <% } %>
+
+  <!-- ? if elseif else condition -->
+  <% if (course == "JFS") { %>
+  <p> <b>Course is : </b> <%= course %> </p>
+  <% } else if (course == "PFS") { %>
+  <p> <b>Course is : </b> <%= course %> </p>
+  <% } else if (course == "MERN") { %>
+  <p> <b>Course is : </b> <%= course %> </p>
+  <% } else { %>
+  <p> <b>Course is : </b> you have to between JFS / PFS / MERN </p>
+  <% } %>
+
+  <!-- Example 2 -->
+  <% if (course == "JFS") { %>
+  <p> <b>Course is : </b> Java Full Stack </p>
+  <% } else if (course == "PFS") { %>
+  <p> <b>Course is : </b> Python FUll Stack </p>
+  <% } else if (course == "MERN") { %>
+  <p> <b>Course is : </b>MERN Full Stack </p>
+  <% } else { %>
+  <p> <b>Course is : </b> you have to between JFS / PFS / MERN </p>
+  <% } %>
+
+  <!-- Example 3 -->
+  <p> <b>Course is : </b>
+
+    <% if (course == "JFS") { %>
+    Java Full Stack
+    <% } else if (course == "PFS") { %>
+    Python FUll Stack
+    <% } else if (course == "MERN") { %>
+    MERN Full Stack
+    <% } else { %>
+    you have to between JFS / PFS / MERN
+    <% } %>
+
+  </p>
+
+  <!-- ? switch case condition -->
+  <!-- ? ternary operator -->
+
+  <%# Any JavaScipt Commented  %>
+
+</body>
+
+</html>
