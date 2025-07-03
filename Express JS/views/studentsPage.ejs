@@ -1,0 +1,49 @@
+<%- include("./partials/header.ejs") %>
+
+<h1>Students Data</h1>
+
+<style>
+
+    table{
+        border-collapse: collapse;
+        color:white
+    }
+
+    table tr:nth-child(even){
+        background-color: bisque;
+        color:black;
+    }
+    
+    table tr:nth-child(odd){
+        background-color: chocolate
+    }
+
+</style>
+
+<section style="border: solid red">
+
+<table border="" cellpadding="10px">
+    
+    <tr>
+        <th>Student ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>Email</th>
+        <th>Major</th>
+        <th>Ratings</th>
+        <th>Enrollment Date</th>
+        <th>Graduation Date</th>
+        <th>Advisor</th>
+    </tr>
+  <% students.map((val, ind) => { %>
+
+        <%- include("./partials/studentsCard.ejs", {val}) %>
+
+  <% }) %>
+
+</table>
+
+</section>
+
+<%- include("./partials/footer.ejs") %>

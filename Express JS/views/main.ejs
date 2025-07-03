@@ -92,9 +92,117 @@
   </p>
 
   <!-- ? switch case condition -->
+  <% switch (course) {
+  case "JFS": %>
+  <p>Hello Student You opted for Java Full Stack Course</p>
+  <% break;
+  case "PFS":  %>
+  <p>Hello Student You opted for Python Full Stack Course</p>
+  <% break;
+  case "MERN": %>
+  <p>Hello Student You opted for MERN Full Stack Course</p>
+  <% break;
+  case "DS": %>
+  <p>Hello Student You opted for Data Science Course</p>
+  <% break;
+  case "DA": %>
+  <p>Hello Student You opted for Data Analytics Course</p>
+  <% break;
+  default: %>
+  <p>Hello Student You have opt for any course</p>
+  <% } %>
+
   <!-- ? ternary operator -->
+  <p><b>isPlaced : </b> <%= isPlaced ? "YES" : "NO"  %></p>
 
   <%# Any JavaScipt Commented  %>
+
+
+  <!-- ! Declaring variables -->
+  <% 
+    let a = 10;
+    let b = 20;
+    let c = 30;
+
+    function greet(name){
+      return `Hello ${name}`
+    }
+  %>
+
+  <p>a : <%= a %></p>
+  <p>b : <%= b %></p>
+  <p>c : <%= c %></p>
+  <p>Greet Manav : <%= greet("Late Commer Manav") %></p>
+  <p>Greet Rahul : <%= greet("Rahul") %></p>
+
+  <!-- ! Looping  -->
+  <hr>
+  <h1>Looping Statements</h1>
+  <!-- ? While Loop  -->
+  <h2>While Loop</h2>
+  <!--~ Example 1 -->
+  <% 
+  let i = 1;
+  while(i<=10){  %>
+  <p> I am new Line <%= i %> </p>
+  <% 
+  i++}%>
+
+  <!--~ Example 2 -->
+  <% 
+  let j = 0;
+  while(j< students.length){ %>
+
+  <p>Studet Name : <%= students[j] %></p>
+
+  <%  j++;
+  } %>
+
+  <!-- ? For Loop  -->
+  <h2>For Loop</h2>
+  <% for (let index = 0; index < students.length; index++) {
+    let name = students[index]; %>
+
+  <p>Student Name : <%= name %></p>
+
+  <% } %>
+
+  <!-- ? For in Loop  -->
+  <h2>For In Loop</h2>
+  <% for(let index in students){ %>
+
+  <p> <b>Student ID: </b> qsp00<%= index %> , <b>Student Name : </b> <%= students[index] %> </p>
+
+  <% }%>
+
+  <!-- ? For of Loop  -->
+  <h2>For Of Loop</h2>
+  <% for(let value of students){ %>
+
+  <p> <b>Student Name : </b> <%= value %> </p>
+  <p> <%= greet(value) %> </p>
+
+  <% }%>
+
+  <!-- ? ForEach Loop  -->
+  <h2>forEach Loop</h2>
+  <% trainer.subjects.forEach(element => { %>
+  <p> Subject Name : <%= element %> </p>
+  <% });%>
+
+  <!-- ? map method  -->
+  <h2>Map method</h2>
+  <% trainer.subjects.map(val => { %>
+  <p> Subject Name : <%= val %> </p>
+  <% }) %>
+
+  <!-- ? Filter Method -->
+  <h2>Filter Method</h2>
+  <% students.filter(val => val.length > 4)  %>
+  <%= students.filter(val => val.length > 4)  %>
+  <% students.filter(val => val.length > 4).map(val => { %>
+  <p> Subject Name : <%= val %> </p>
+  <% })  %>
 
 </body>
 

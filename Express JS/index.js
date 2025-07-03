@@ -1385,11 +1385,16 @@ Link: https://ejs.co/
 
 const express = require("express");
 const app = express();
+const fs = require("fs");
 
 // app.set("views", "./views"); // this is default so not mandatory
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
+  res.send("Choose students / users / products pages");
+});
+
+app.get("/main", (req, res) => {
   // res.render("main");
   // res.render("main", { page: "Home" });
   // res.render("main", { page: "About" });
@@ -1404,7 +1409,18 @@ app.get("/", (req, res) => {
     userEmail: "pranchi@gmail.com",
     userNo: 7894561300,
     isNodeStudent: false,
-    students: ["Manav", "Sahil", "Rahul", "Ritanshu", "Ajit", "Vamsi"],
+    students: [
+      "dolu",
+      "Manav",
+      "sonu",
+      "Sahil",
+      "Rahul",
+      "monu",
+      "Ritanshu",
+      "Ajit",
+      "bolu",
+      "Vamsi",
+    ],
     trainer: {
       trainerName: "Bobby",
       trainerEmail: "bobby@gmail.com",
@@ -1414,8 +1430,24 @@ app.get("/", (req, res) => {
     isMarried: undefined,
     mockRatings: null,
     salary: 2n,
-    course: "MERN",
+    course: "DS",
   });
+});
+
+app.get("/students", (req, res) => {
+  let students = JSON.parse(
+    fs.readFileSync("./data/StudentsData200.json", "utf-8")
+  );
+
+  res.render("studentsPage", { students });
+});
+
+app.get("/users", (req, res) => {
+  res.render("usersPage", {});
+});
+
+app.get("/products", (req, res) => {
+  res.render("productsPage", {});
 });
 
 app.listen(8000, () => {
