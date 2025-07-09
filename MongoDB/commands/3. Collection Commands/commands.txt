@@ -1,0 +1,16 @@
+>>> show collections | show tables | db.getCollectionNames()
+    To list all the collection in a database.
+
+>>> db.createCollection("collectionName")
+    It will create the collection.
+
+>>> db.getCollection("collectionName")
+    It will return the single collection 
+
+>>> db.oldCollectionName.renameCollection("newCollectionName")
+    It will update the collection name
+    If the oldCollectionName contains spaces, implicit way will not work,
+    we have to use explicit way.
+    
+>>> db.collectionName.drop();
+    It will delete the collection from the database.

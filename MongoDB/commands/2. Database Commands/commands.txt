@@ -1,0 +1,14 @@
+>>> show dbs or show databases
+    To list all the databases in the server. 
+
+>>> use databaseName
+    It will create the database and enter into it.
+    If already exists, it will enter into the database.
+
+>>> db 
+    To target the database 
+
+>>> db.dropDatabase() | db.databaseName.drop() | db.dropDatabase("dbName")
+    To delete the database from the server. 
+
+ 

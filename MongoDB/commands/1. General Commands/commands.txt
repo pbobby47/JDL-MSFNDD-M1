@@ -1,0 +1,18 @@
+>>> monogosh
+    It will connect to the mongo server.
+    In services we are able to start/stop the server. 
+
+>>> ctrl + c or .exit
+    It will disconnect from the mongosever.
+
+>>> cls
+    It will clear the cmd screen
+
+>>> cd
+    It will change the directory to forward
+
+>>> cd ..
+    It will change the directory to backward
+
+>>> double tap 
+    To know all possible keywords / methods
