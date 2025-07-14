@@ -3,7 +3,7 @@
 >>> insertMany() 
 >>> insert() 
 
-Returns a new ObjectId. The 12-byte ObjectId consists of:
+Returns a new ObjectId. The 12-byte(24 characters) ObjectId consists of:
 
 A 4-byte timestamp, representing the ObjectId's creation, measured in seconds since the Unix epoch.
 
