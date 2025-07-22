@@ -4,6 +4,13 @@ const bcrypt = require("bcrypt");
 // ? Create Student
 exports.createStudent = async (req, res) => {
   try {
+    if (!req.body.password) {
+      return res.status(400).json({
+        status: false,
+        message: "Password is required",
+      });
+    }
+
     let { password } = req.body;
 
     let hashedPassword = await bcrypt.hash(password, 10);
@@ -34,27 +41,85 @@ exports.createStudent = async (req, res) => {
   }
 };
 
-// ? Read All Student
-exports.getAllStudents = (req, res) => {
-  res.send("Hii, I am from get all students");
+// ? Read All Students
+exports.getAllStudents = async (req, res) => {
+  try {
+    let students = await studentModel.find();
+
+    res.status(200).json({
+      satus: true,
+      message: "All students details",
+      count: students.length,
+      data: students,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error.message,
+    });
+  }
 };
 
 // ? Read Single Student
-exports.getSingleStudent = (req, res) => {
-  res.send("Hii, I am from get single student");
+exports.getSingleStudent = async (req, res) => {
+  try {
+    // let student = await studentModel.findOne({ _id: req.params.id });
+    let student = await studentModel.findById(req.params.id);
+
+    res.status(200).json({
+      status: true,
+      message: "Details of single student",
+      data: student,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error.message,
+    });
+  }
 };
 
 // ? Update Student
-exports.updateStudent = (req, res) => {
-  res.send("Hii, I am from update student");
+exports.updateStudent = async (req, res) => {
+  try {
+    // let updatedStudent = await studentModel.updateOne(
+    //   { _id: req.params.id },
+    //   {
+    //     $set: {
+    //       ...req.body,
+    //     },
+    //   }
+    // );
+
+    let updatedStudent = await studentModel.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      status: true,
+      message: "Updated Successfully",
+      data: updatedStudent,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error.message,
+    });
+  }
 };
 
 // ? Delete Student
-exports.deleteStudent = (req, res) => {
-  res.send("Hii, I am from delete student");
+exports.deleteStudent = async (req, res) => {
+  await studentModel.findByIdAndDelete(req.params.id);
+
+  res.json({
+    status: true,
+    message: "Deleted student data",
+  });
 };
 
-// ? Delete Student
+// ? Delete Students
 exports.deleteAllStudents = async (req, res) => {
   await studentModel.deleteMany();
 
