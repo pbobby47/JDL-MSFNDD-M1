@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const studentsRouter = require("./Routes/studentRoutes");
+const authRouter = require("./Routes/authRoutes");
 
 const app = express();
 app.use(express.json()); // It will parse the req body into js
@@ -17,6 +18,7 @@ mongoose
   });
 
 // ! Routes
+app.use("/api/auth/users", authRouter);
 app.use("/api/v1/students", studentsRouter);
 // app.use("/api/v1/trainers", trainersRouter);
 
